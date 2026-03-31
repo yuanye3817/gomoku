@@ -1,0 +1,48 @@
+# 依赖目录
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# 构建输出
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+
+# 包管理器锁文件（根据团队需求选择保留或忽略）
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# 日志文件
+logs/
+*.log
+
+# 编辑器配置
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 本地环境变量文件（包含敏感信息）
+.env
+.env.local
+.env.*.local
+
+# 测试覆盖率报告
+coverage/
+.nyc_output/
+
+# 缓存文件
+.cache/
+.temp/
+*.tsbuildinfo
+
+# 可选：如果使用 TypeScript
+# dist-types/

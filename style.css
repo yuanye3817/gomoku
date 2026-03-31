@@ -1,0 +1,162 @@
+/* 全局样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 页面主体样式 */
+body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* 游戏容器 */
+.game-container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* 标题样式 */
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+}
+
+/* 游戏信息栏 */
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+/* 当前玩家显示 */
+.current-player {
+    font-size: 1.2em;
+    color: #555;
+}
+
+#player-indicator {
+    font-weight: bold;
+    padding: 5px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+#player-indicator.black {
+    background-color: #333;
+    color: white;
+}
+
+#player-indicator.white {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 2px solid #333;
+}
+
+/* 重新开始按钮 */
+#restart-btn {
+    padding: 10px 25px;
+    font-size: 1em;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#restart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+#restart-btn:active {
+    transform: translateY(0);
+}
+
+/* 棋盘容器 */
+.board-container {
+    display: inline-block;
+    background: #deb887;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 画布样式 */
+#game-board {
+    display: block;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* 游戏结果提示 */
+.result {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 1.5em;
+    font-weight: bold;
+    border-radius: 10px;
+    animation: fadeIn 0.5s ease;
+}
+
+.result.hidden {
+    display: none;
+}
+
+.result.win-black {
+    background-color: #333;
+    color: white;
+}
+
+.result.win-white {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 2px solid #333;
+}
+
+/* 淡入动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 700px) {
+    .game-container {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    #game-board {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+    }
+
+    .game-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
