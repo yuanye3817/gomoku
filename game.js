@@ -29,6 +29,8 @@ class GomokuGame {
         this.currentPlayer = PLAYER.BLACK;  // 黑棋先手
         this.gameOver = false;              // 游戏是否结束
         this.lastMove = null;               // 最后落子位置
+        this.moveHistory = [];              // 移动历史记录（用于悔棋）
+        this.clickHandler = null;           // 点击事件处理函数引用
         this.board = this.createBoard();    // 创建棋盘数据
         this.bindEvents();                  // 绑定事件
         this.draw();                        // 初始绘制
@@ -49,8 +51,26 @@ class GomokuGame {
      * 绑定点击事件
      */
     bindEvents() {
-        // 使用箭头函数保持 this 上下文
-        this.canvas.addEventListener('click', (event) => this.handleClick(event));
+        // 保存事件处理函数引用，以便后续清理
+        this.clickHandler = (event) => this.handleClick(event);
+        this.canvas.addEventListener('click', this.clickHandler);
+    }
+
+    /**
+     * 销毁游戏实例，清理事件监听器和资源
+     * 防止内存泄漏
+     */
+    destroy() {
+        // 移除点击事件监听器
+        if (this.clickHandler) {
+            this.canvas.removeEventListener('click', this.clickHandler);
+            this.clickHandler = null;
+        }
+        // 清理引用
+        this.canvas = null;
+        this.ctx = null;
+        this.board = null;
+        this.moveHistory = null;
     }
 
     /**
@@ -80,6 +100,15 @@ class GomokuGame {
 
         // 检查该位置是否已有棋子
         if (this.board[row][col] !== PLAYER.NONE) return;
+
+        // 记录移动历史（用于悔棋）- 在放置前保存上一步状态
+        this.moveHistory.push({
+            row,
+            col,
+            player: this.currentPlayer,
+            prevLastMove: this.lastMove,
+            wasGameOver: this.gameOver
+        });
 
         // 记录最后落子位置
         this.lastMove = { row, col };
@@ -138,6 +167,9 @@ class GomokuGame {
      */
     updatePlayerIndicator() {
         const indicator = document.getElementById('player-indicator');
+        // 检查元素是否存在，避免运行时错误
+        if (!indicator) return;
+
         const { currentPlayer } = this;
 
         if (currentPlayer === PLAYER.BLACK) {
@@ -242,6 +274,9 @@ class GomokuGame {
         const resultDiv = document.getElementById('game-result');
         const winnerText = document.getElementById('winner-text');
 
+        // 检查元素是否存在，避免运行时错误
+        if (!resultDiv || !winnerText) return;
+
         winnerText.textContent = message;
         resultDiv.className = `result ${className}`;
     }
@@ -255,14 +290,56 @@ class GomokuGame {
         this.gameOver = false;
         this.lastMove = null;
         this.board = this.createBoard();
+        // 清空移动历史
+        this.moveHistory = [];
 
         // 隐藏结果提示
         const resultDiv = document.getElementById('game-result');
-        resultDiv.className = 'result hidden';
+        if (resultDiv) {
+            resultDiv.className = 'result hidden';
+        }
 
         // 更新 UI
         this.updatePlayerIndicator();
         this.draw();
+    }
+
+    /**
+     * 悔棋 - 撤销上一步操作
+     * @returns {boolean} 是否成功悔棋
+     */
+    undo() {
+        // 检查是否有历史记录可以撤销
+        if (this.moveHistory.length === 0) {
+            return false;
+        }
+
+        // 弹出最后一步移动记录
+        const lastMove = this.moveHistory.pop();
+
+        // 清除该位置的棋子
+        this.board[lastMove.row][lastMove.col] = PLAYER.NONE;
+
+        // 恢复上一个玩家
+        this.currentPlayer = lastMove.player;
+
+        // 恢复上一步的 lastMove
+        this.lastMove = lastMove.prevLastMove;
+
+        // 如果之前游戏已结束，现在恢复为未结束状态
+        this.gameOver = false;
+
+        // 隐藏结果提示
+        const resultDiv = document.getElementById('game-result');
+        if (resultDiv) {
+            resultDiv.className = 'result hidden';
+        }
+
+        // 更新 UI
+        this.updatePlayerIndicator();
+        this.draw();
+
+        return true;
     }
 
     /**
